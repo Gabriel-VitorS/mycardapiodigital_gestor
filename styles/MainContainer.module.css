@@ -1,0 +1,27 @@
+.navMenu{
+    width: 280px;
+}
+
+.sectionMain{
+    height: 92%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1em 1em 0 1em;
+}
+
+@media (max-width: 768px) {
+    .navMenu{
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: -150vw;
+        transition: left 0.5s;
+    }
+
+    .showNav{
+        left: 0;
+    }
+}
