@@ -1,0 +1,7 @@
+.modalLoaderContent > div{
+    justify-content: center !important;
+}
+
+.modalLoaderContent > div > div{
+    width: 200px;
+}

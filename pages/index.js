@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Home() {
+const Home = () => {
   return (
     <div >
       <Link href={'/cadastrar'}>
@@ -14,3 +14,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
