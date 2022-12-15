@@ -4,7 +4,7 @@ import { BsSearch, BsPlusLg, BsX } from "react-icons/bs"
 import { useRouter } from "next/router"
 
 import Pagination from "../../../Components/Pagination/Pagination"
-const Produto = () =>{
+const Produtos = () =>{
     const router = useRouter()
     const [produtos, setProdutos] = useState()
     const [params, setParams] = useState('') //parametros de filtro
@@ -20,7 +20,6 @@ const Produto = () =>{
     async function getProduct(page, filter) {
         await APIRequestAuth(`product?page=${page}&${filter}`, 'GET')
         .then(data => {
-            console.log(data)
             setProdutos(data.body.data.data)
             setLoader(false)
             setPagination(data.body.data.meta)
@@ -70,6 +69,17 @@ const Produto = () =>{
         setParams('')
     }
 
+    function pushToidProduto(e){
+        const id = e.target.dataset.id
+
+        router.push({
+            pathname: '/gestor/produtos/[idProduto]',
+            query: {idProduto: id}
+        })
+
+        
+    }
+
     return (
         <>
 
@@ -102,7 +112,7 @@ const Produto = () =>{
                     <div className="col-md-3">
                         
                         <button onClick={filtrarProduto} className="btn btn-warning me-2"><BsSearch className="pb-1 pe-1" /> Filtrar</button>
-                        <button onClick={()=>{}} className="btn btn-primary"> <BsPlusLg className="pb-1 pe-1" /> Incluir</button>
+                        <button onClick={pushToidProduto} data-id='0' className="btn btn-primary"> <BsPlusLg className="pb-1 pe-1" /> Incluir</button>
                     </div>
 
                     <div className="col-md-2">
@@ -127,13 +137,13 @@ const Produto = () =>{
                         <tbody>
                             
                             {produtos && produtos.map((value, index) => (
-                                <tr key={value.id}>
-                                    <td scope="row" >{value.id}</td>
-                                    <td>{value.name}</td>
-                                    <td>{value.value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</td>
-                                    <td>{value.highlight === 'true' ? 'Sim' : 'Não'}</td>
-                                    <td>{value.visible_online === 'true' ? 'Sim' : 'Não'}</td>
-                                    <td>{value.category_id}</td>
+                                <tr key={value.id} onClick={pushToidProduto}>
+                                    <td data-id={value.id} scope="row" >{value.id}</td>
+                                    <td data-id={value.id}> {value.name}</td>
+                                    <td data-id={value.id}> {value.value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</td>
+                                    <td data-id={value.id}> {value.highlight === 'true' ? 'Sim' : 'Não'}</td>
+                                    <td data-id={value.id}> {value.visible_online === 'true' ? 'Sim' : 'Não'}</td>
+                                    <td data-id={value.id}> {value.category_id}</td>
                                 </tr>
 
                                 )
@@ -160,4 +170,4 @@ const Produto = () =>{
     )
 }
 
-export default Produto
+export default Produtos
