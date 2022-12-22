@@ -4,6 +4,7 @@ import { BsSearch, BsPlusLg, BsX } from "react-icons/bs"
 import { useRouter } from "next/router"
 
 import Pagination from "../../../Components/Pagination/Pagination"
+import Loader from "../../../Components/Loader/Loader"
 const Produtos = () =>{
     const router = useRouter()
     const [produtos, setProdutos] = useState()
@@ -18,6 +19,7 @@ const Produtos = () =>{
     }, [params])
 
     async function getProduct(page, filter) {
+        setLoader(true)
         await APIRequestAuth(`product?page=${page}&${filter}`, 'GET')
         .then(data => {
             setProdutos(data.body.data.data)
@@ -102,7 +104,7 @@ const Produtos = () =>{
                         <div className="d-flex">
                             <input type="text" id="filterInput" className="form-control" />
                             {
-                               params.length > 0 ? <BsX className="ms-1 mt-1 text-danger" onClick={clearFilter} size={30}></BsX> : ''
+                               params.length > 0 ? <BsX style={{cursor: 'pointer'}} title="Remover filtro" className="ms-1 mt-1 text-danger" onClick={clearFilter} size={30}></BsX> : ''
                             }
                         </div>
                         
@@ -137,7 +139,7 @@ const Produtos = () =>{
                         <tbody>
                             
                             {produtos && produtos.map((value, index) => (
-                                <tr key={value.id} onClick={pushToidProduto}>
+                                <tr style={{cursor: 'pointer'}} key={value.id} onClick={pushToidProduto}>
                                     <td data-id={value.id} scope="row" >{value.id}</td>
                                     <td data-id={value.id}> {value.name}</td>
                                     <td data-id={value.id}> {value.value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</td>
@@ -154,6 +156,7 @@ const Produtos = () =>{
                 </div>
             </div>
 
+            {loader && <Loader message={'Carregando'} />}
             
             {
                 pagination && 
