@@ -10,12 +10,20 @@ import CropImage from "../../../Components/CropImage/CropImage"
 
 import Loader from "../../../Components/Loader/Loader"
 import ModalAlert from "../../../Components/ModalAlert/ModalAlert"
+import ModalConfirm from "../../../Components/ModalConfirm/ModalConfirm"
+import Notification from "../../../Components/Notification/Notification"
+
 const Produto = () =>{
     const router = useRouter()
+
     const [loader, setLoader] = useState()
     const [alert, setAlert] = useState(false)
+    const [confirm, setConfirm] = useState(false)
+    const [notification, setNotification] = useState(false)
+
     const [messageAlert, setMessageAlert] = useState('')
     const idProduto = router.query.idProduto
+
     const image = useRef()
 
     useEffect(()=>{
@@ -84,14 +92,47 @@ const Produto = () =>{
         setLoader(false)
 
         if(!request){
+            setNotification(true)
             return
         }
 
-        if(request.status == 200){
-            isPut ? setMessageAlert('Produto atualizado com sucesso !') : setMessageAlert('Produto incluido com sucesso !')
-            setAlert(true)
-
+        if(request.status == 401){
+            router.push('/entrar')
+            return
         }
+
+        if(request.status != 200){
+            setNotification(true)
+            return
+        }
+
+        isPut ? setMessageAlert('Produto atualizado com sucesso !') : setMessageAlert('Produto incluido com sucesso !')
+        setAlert(true)
+
+    }
+
+    const deleteProduto = async () =>{
+        setLoader(true)
+        const request = await APIRequestAuth(`product/${idProduto}`, 'DELETE')
+        setLoader(false)
+
+        if(!request){
+            setNotification(true)
+            return
+        }
+
+        if(request.status == 401){
+            router.push('/entrar')
+            return
+        }
+
+        if(request.status != 200){
+            setNotification(true)
+            return
+        }
+
+        setMessageAlert('Produto deletado com sucesso !')
+        setAlert(true)
     }
 
     const buttonAlert = () =>{
@@ -153,7 +194,7 @@ const Produto = () =>{
                     {
                         idProduto != 0 ?
                             <>
-                            <button className="btn btn-danger me-2">Deletar</button>
+                            <button onClick={()=>{setConfirm(true)}} className="btn btn-danger me-2">Deletar</button>
                             <button className="btn btn-success btn-update ms-2" onClick={requestProduto}>Salvar</button>
                             </>
                         : <button onClick={requestProduto} className="btn btn-success">Incluir</button>
@@ -164,6 +205,8 @@ const Produto = () =>{
 
             {loader && <Loader message={'Carregando dados'} />}
             {alert && <ModalAlert onClick={buttonAlert} message={messageAlert} />}
+            {confirm && <ModalConfirm message={'Deseja deletar o produto?'} onClick={deleteProduto} setConfirm={setConfirm} />}
+            {notification && <Notification type={'danger'} text={'Houve um erro. Contate o suporte'} visible={notification} setToast={setNotification} />}
         </>
     )
 }
