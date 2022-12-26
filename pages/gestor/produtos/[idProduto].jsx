@@ -14,6 +14,7 @@ const Produto = () =>{
     const router = useRouter()
     const [loader, setLoader] = useState()
     const [alert, setAlert] = useState(false)
+    const [messageAlert, setMessageAlert] = useState('')
     const idProduto = router.query.idProduto
     const image = useRef()
 
@@ -52,8 +53,8 @@ const Produto = () =>{
         }
     }
 
-    const cadastraProduto = async () =>{
-
+    const requestProduto = async (e) =>{
+        const isPut = e.target.classList.value.includes('btn-update')
         const name = document.querySelector('#name')
         const highlight = document.querySelector('#highlight')
         const visible_online = document.querySelector('#visible_online')
@@ -79,7 +80,7 @@ const Produto = () =>{
         formData.append('visible_online', `${visible_online.checked}`)
         
         setLoader(true)
-        const request = await APIRequestAuthFile('product', 'POST', formData)
+        const request = await APIRequestAuthFile(`${isPut ? `product/${idProduto}` : 'product'}`, `${isPut ? `PUT` : 'POST'}`, formData)
         setLoader(false)
 
         if(!request){
@@ -87,8 +88,9 @@ const Produto = () =>{
         }
 
         if(request.status == 200){
+            isPut ? setMessageAlert('Produto atualizado com sucesso !') : setMessageAlert('Produto incluido com sucesso !')
             setAlert(true)
-            // router.push('/gestor/produtos')
+
         }
     }
 
@@ -152,16 +154,16 @@ const Produto = () =>{
                         idProduto != 0 ?
                             <>
                             <button className="btn btn-danger me-2">Deletar</button>
-                            <button className="btn btn-success ms-2">Salvar</button>
+                            <button className="btn btn-success btn-update ms-2" onClick={requestProduto}>Salvar</button>
                             </>
-                        : <button onClick={cadastraProduto} className="btn btn-success">Incluir</button>
+                        : <button onClick={requestProduto} className="btn btn-success">Incluir</button>
                     }
                 </div>
                 
             </footer>
 
             {loader && <Loader message={'Carregando dados'} />}
-            {alert && <ModalAlert onClick={buttonAlert} message={'Produto incluido com sucesso !'} />}
+            {alert && <ModalAlert onClick={buttonAlert} message={messageAlert} />}
         </>
     )
 }
