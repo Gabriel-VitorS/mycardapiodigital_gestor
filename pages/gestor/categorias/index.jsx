@@ -93,7 +93,7 @@ const Categorias = () =>{
                         
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-5">
                         
                         <button onClick={filtrarCategoria} className="btn btn-warning me-2"><BsSearch className="pb-1 pe-1" /> Filtrar</button>
                         <button onClick={pushToidCategoria} data-id='0' className="btn btn-primary"> <BsPlusLg className="pb-1 pe-1" /> Incluir</button>
